@@ -33,6 +33,18 @@
 
 }
 
+.common--remark {
+  overflow: hidden;
+  font-size: 13px;
+  color: #181818;
+  font-weight: bold;
+  width:100px;
+  //white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: DIN-Regular, PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+}
+
+
 /* 为所有的滚动条设置样式 */
 ::-webkit-scrollbar {
   width: 5px; /* 设置滚动条的宽度 */

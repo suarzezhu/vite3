@@ -1,9 +1,10 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
-import path from 'node:path'
+import { app, BrowserWindow, ipcMain,protocol} from 'electron'
 import envConfig from '../config/envConfig'
 import { info } from 'electron-log'
 import { getFileList } from '../common/fileUtils.js'
 import { runAppInBackground, openProgram } from '../common/localOprea'
+const fs = require('fs')
+const path = require('path')
 
 
 // build 打包运行时；start 开发运行时
@@ -31,7 +32,10 @@ const browserOps = {
     nodeIntegrationInWorker: true,
     nodeIntegrationInSubFrames: true,
     contextIsolation: false, // 启用上下文隔离 默认为 true
-    preload: path.join(__dirname, '../preload/index.js')
+    preload: path.join(__dirname, '../preload/index.js'),
+    webSecurity: false, //========关闭安全策略===========
+    webviewTag:true
+
   }
 }
 
@@ -52,6 +56,26 @@ app.whenReady().then(() => {
     // 显示窗口
     mainWin.show()
   })
+
+
+  // 注册协议
+  // 注册自定义协议，例如 'myapp'
+  protocol.registerFileProtocol('myapp', (request, callback) => {
+    console.log(request,'url')
+    const url = request.url.substr(8); // 去掉协议头 'myapp://'
+    const decodedUrl = decodeURIComponent(url); // 解码 URL
+    try {
+      // 返回图片的本地路径
+      console.log(decodedUrl,'de')
+      return callback(decodedUrl);
+    } catch (error) {
+      console.error('Failed to register protocol', error);
+    }
+  });
+
+
+
+
 })
 
 // 定义关闭事件
@@ -80,4 +104,17 @@ ipcMain.on('openFile', async (event, data) => {
   const { filePath } = data
   openProgram(filePath)
 })
+
+
+ipcMain.handle('get-images', async (event, dirPath) => {
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+  const files = fs.readdirSync(dirPath);
+  const images = files.filter((file) =>
+    imageExtensions.includes(path.extname(file).toLowerCase().slice(1)))
+    .map((file) => {
+      return {src: `${dirPath}/${file}`}
+    });
+  return images;
+})
+
 

@@ -10,10 +10,10 @@ const attributeName = ref('href')
 const lurl = ref('https://m-tob.jd.com/user_login')
 
 //🚀 ref本质是vue2的set get 设置
-const userAttr=ref({
-  name:'suarezzhu',
-  age:15,
-  sex:'male'
+const userAttr = ref({
+  name: 'suarezzhu',
+  age: 15,
+  sex: 'male'
 })
 //🚀 reactive是使用js的proxy来实现的
 // reactive的返回对象是个proxy
@@ -22,31 +22,24 @@ const userAttr=ref({
 //   对解构操作不友好  如 const state  =reactive （{count:0}）, let{count} =state
 
 const time = reactive({
-  timeLocal:'suzhou',
-  timeDetail:'2024.5.1'
+  timeLocal: 'suzhou',
+  timeDetail: '2024.5.1'
 })
 
 
 //🚀计算属性
-const ipInfo=computed(()=>{
+const ipInfo = computed(() => {
   return 'hello'.length
 })
 //getter setter
-const fullName=computed({
-  get(){
+const fullName = computed({
+  get() {
     return 'hello'
   },
-  set(nv){
+  set(nv) {
 
   }
 })
-
-
-
-
-
-
-
 
 
 </script>
@@ -55,12 +48,16 @@ const fullName=computed({
 <template>
 
   <div class="right-bar">
-    <span>首页</span>
-    <divider type="vertical"></divider>
-    <span>导入书籍</span>
+
+    <router-link to="/">首页</router-link>
     <divider type="vertical"></divider>
     <!--    vue3🚀动态参数语法-->
-    <a :[attributeName]='lurl'>京东读书</a>
+    <!--    <a :[attributeName]='lurl'>京东读书</a>-->
+    <!--    <span >京东读书</span>-->
+    <!--    <a href="https://m-tob.jd.com/">京东读书</a>-->
+    <router-link to="/favourite">收藏</router-link>
+    <divider type="vertical"></divider>
+    <router-link to="/webView?url=https://m-tob.jd.com/">京东读书</router-link>
     <!--    <a :href='lurl'>hello</a>-->
     <!--    <p>{{ attributeName }}</p>-->
     <divider type="vertical"></divider>
@@ -75,7 +72,9 @@ const fullName=computed({
 <style lang="scss" scoped>
 
 .right-bar {
-
+  padding-top: 10px;
+  margin-bottom: 20px;
+  position: relative;
   display: flex;
   justify-content: flex-end;
   align-items: center;
