@@ -53,15 +53,11 @@ const fullName = computed({
     <divider type="vertical"></divider>
     <!--    vue3🚀动态参数语法-->
     <!--    <a :[attributeName]='lurl'>京东读书</a>-->
-    <!--    <span >京东读书</span>-->
-    <!--    <a href="https://m-tob.jd.com/">京东读书</a>-->
     <router-link to="/favourite">收藏</router-link>
     <divider type="vertical"></divider>
     <router-link to="/webView?url=https://m-tob.jd.com/">京东读书</router-link>
-    <!--    <a :href='lurl'>hello</a>-->
-    <!--    <p>{{ attributeName }}</p>-->
     <divider type="vertical"></divider>
-    <span>微信读书</span>
+    <router-link to="/webView?url=https://weread.qq.com/">微信读书</router-link>
     <divider type="vertical"></divider>
     <avatar></avatar>
   </div>

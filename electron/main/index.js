@@ -14,9 +14,9 @@ const runtime_type = app.isPackaged ? 'build' : 'start'
 const iconUrl = app.isPackaged ? path.join(__dirname, '../dist-icon/icons/icon.ico') : './public/favicon.ico'
 
 const browserOps = {
-  width: 1300,
+  width: 1350,
   height: 900,
-  minWidth: 1300,
+  minWidth: 1350,
   minHeight: 900,
   // 不展示渲染窗口
   show: false,
@@ -90,7 +90,7 @@ ipcMain.on('msg', (event, data) => {
 
 
 ipcMain.on('getFileListByType', async (event, data) => {
-  console.log(data)
+  // console.log(data)
   const { path } = data
   const files = await getFileList(path)
   event.sender.send('reply', { data: files })

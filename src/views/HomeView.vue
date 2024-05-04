@@ -37,19 +37,29 @@ const columns = [
   {
     title: '序号',
     type: 'index',
-    width: 80,
+    width: 70,
     align: 'center'
   },
   {
     title: '名称',
     key: 'name',
     sortable: true,
-    width: 800
-
+    width: 800,
+    tooltip:true,
   },
   {
-    title: '时间',
-    key: 'time'
+    title: '修改时间',
+    key: 'mTime',
+    sortable: true,
+    tooltip:true,
+    width: 110
+  },
+  {
+    title: '创建时间',
+    key: 'bTime',
+    sortable: true,
+    tooltip:true,
+    width: 110
   }
 ]
 
@@ -79,9 +89,9 @@ const showList = async (urlName) => {
   curFileType = urlName
   const { data } = await ipcRender('getFileListByType', 'reply', { path: urlName })
   recentReadList.length = 0
-  data.forEach((item) => {
-    recentReadList.push({ name: item })
-  })
+  // recentReadList = recentReadList.concat(data)
+  // 🚀 vue3 修改reactive 定义的数组方法之一
+  Object.assign(recentReadList, data)
 }
 
 
@@ -177,7 +187,7 @@ const changeFolderState = (status) => {
 
       <div>
         <div v-for="(value,key) in learnTypes"
-             style="margin: 5px 0px 0px 0px;"
+             style="margin: 5px 0px 0px 0px;font-weight: 450"
              class="common_font_16 common--cover"
              @click.self="showList(value)"
         >
