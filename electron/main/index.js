@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain,protocol} from 'electron'
 import envConfig from '../config/envConfig'
 import { info } from 'electron-log'
-import { getFileList } from '../common/fileUtils.js'
+import { changeFile, getFileList, readFile, writeFile } from '../common/fileUtils.js'
 import { runAppInBackground, openProgram } from '../common/localOprea'
 const fs = require('fs')
 const path = require('path')
@@ -66,7 +66,6 @@ app.whenReady().then(() => {
     const decodedUrl = decodeURIComponent(url); // 解码 URL
     try {
       // 返回图片的本地路径
-      console.log(decodedUrl,'de')
       return callback(decodedUrl);
     } catch (error) {
       console.error('Failed to register protocol', error);
@@ -84,26 +83,40 @@ ipcMain.handle('quit', () => {
 })
 
 ipcMain.on('msg', (event, data) => {
-  console.log(data)
   getFileList()
 })
 
 
 ipcMain.on('getFileListByType', async (event, data) => {
-  // console.log(data)
   const { path } = data
   const files = await getFileList(path)
   event.sender.send('reply', { data: files })
-  // event.sender.send() 参数1：回复时触发方法的名称，参数2：要回复的数据
-  // runAppInBackground('/System/Applications/Calculator.app/Contents/MacOS/Calculator')
-  // execll()
 })
 
 ipcMain.on('openFile', async (event, data) => {
-  console.log(data)
   const { filePath } = data
   openProgram(filePath)
 })
+
+
+ipcMain.on('readFile', async (event, data) => {
+  const { filePath } = data
+  const config=await readFile(filePath)
+  event.sender.send('readFileReply', { data: config })
+})
+
+ipcMain.on('writeFile', async (event, data) => {
+  const {config, filePath } = data
+  writeFile(config,filePath)
+})
+
+
+ipcMain.on('changeFile', async (event, data) => {
+  const {filePath,key,val} = data
+  changeFile(filePath,key,val)
+})
+
+
 
 
 ipcMain.handle('get-images', async (event, dirPath) => {

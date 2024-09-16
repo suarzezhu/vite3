@@ -23,13 +23,15 @@ const PngType = reactive({
 
 onMounted(() => {
 
-  let rs = handleGetFile('/Users/suarezzhu/Desktop/mydata/壁纸')
+  // let rs = handleGetFile('/Users/suarezzhu/Desktop/mydata/壁纸')
+  getCurJzFile()
+
 
 })
 
-const handleGetFile = async (folderPath) => {
-  return await ipcRenderer.invoke('get-images', folderPath)
-}
+// const handleGetFile = async (folderPath) => {
+//   return await ipcRenderer.invoke('get-images', folderPath)
+// }
 
 
 //列表头
@@ -44,22 +46,28 @@ const columns = [
     title: '名称',
     key: 'name',
     sortable: true,
-    width: 800,
-    tooltip:true,
+    width: 700,
+    tooltip: true
   },
   {
     title: '修改时间',
     key: 'mTime',
     sortable: true,
-    tooltip:true,
+    tooltip: true,
     width: 110
   },
   {
     title: '创建时间',
     key: 'bTime',
     sortable: true,
-    tooltip:true,
+    tooltip: true,
     width: 110
+  },
+  {
+    title: 'Action',
+    slot: 'action',
+    width: 150,
+    align: 'center'
   }
 ]
 
@@ -69,6 +77,7 @@ const learnTypes = reactive(fileLocal)
 let recentReadList = reactive([])
 let curFileType = ref('')
 let curFolderSTatus = ref(1)
+let curConfig = reactive({})
 
 
 // 通用交互
@@ -149,8 +158,28 @@ const changeFolderState = (status) => {
       curFolderSTatus.value = 3
       return
   }
+}
 
+//标记当前读到的卷子
+const markCurFile = (row) => {
+  const filePath = '/Users/suarezzhu/Desktop/mydata/data.json'
+  ipcRenderer.send('changeFile', { filePath, key: 'curJzRead', val: row.name })
+  getCurJzFile()
+  // recentReadList = [...recentReadList]
+  Object.assign(recentReadList, [])
 
+}
+//获取当前阅读的卷子
+const getCurJzFile = async () => {
+  const filePath = '/Users/suarezzhu/Desktop/mydata/data.json'
+  const { data } = await ipcRender('readFile', 'readFileReply', { filePath })
+  Object.assign(curConfig, data)
+
+}
+
+//
+const getCurColor = (row) => {
+  return curConfig['curJzRead'] == row.name ? 'red' : 'green'
 }
 
 
@@ -216,36 +245,22 @@ const changeFolderState = (status) => {
 
         <div
           v-if="curFolderSTatus==2">
-          <!--        列表显示格式-->
-          <!--          <template v-for="(item,index) in recentReadList">-->
-          <!--            <div @click="openFile(item.name)">{{ item.name }}</div>-->
-          <!--          </template>-->
-
-
-          <!--          <List  border>-->
-          <!--            <ListItem-->
-          <!--              class="list&#45;&#45;click"-->
-          <!--              v-for="(item,index) in recentReadList"-->
-          <!--              @dblclick="openFile(item.name)"-->
-          <!--            >{{ item.name }}-->
-          <!--            </ListItem>-->
-
-          <!--          </List>-->
-
-
           <Table
             stripe
             @on-row-click="openFile"
             highlight-row
             border ref="selection"
             :columns="columns"
-            :data="recentReadList"></Table>
-
-
+            :data="recentReadList">
+            <template #action="{ row, index }">
+              <Icon @click.stop="markCurFile(row)"
+                    size="25"
+                    style="cursor: pointer"
+                    :color="getCurColor(row)"
+                    type="md-checkbox" />
+            </template>
+          </Table>
         </div>
-
-
-        <!--        <Modal />-->
       </div>
     </div>
 

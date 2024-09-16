@@ -1,5 +1,5 @@
 {
-  "name": "electronapp",
+  "name": "squ",
   "version": "0.0.0",
   "private": true,
   "main": "dist-electron/main/index.js",
@@ -58,7 +58,7 @@
     "vitest": "^1.4.0"
   },
   "build": {
-    "productName": "桌面应用名",
+    "productName": "s趣",
     "directories": {
       "output": "build"
     },
@@ -106,7 +106,7 @@
       "icon": "dist-icon/icons/icon.icns",
       "background": "static/install_background.png",
       "internetEnabled": true,
-      "title": "桌面应用名",
+      "title": "s趣",
       "window": {
         "width": 580,
         "height": 400
